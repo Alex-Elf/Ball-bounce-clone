@@ -18,4 +18,11 @@ public class BallController : MonoBehaviour {
     {
 
     }
+    public void OnTriggerEnter2D(Collider2D other)
+    {
+        if(other.tag == "Bottom")
+        {
+            Destroy(gameObject);
+        }
+    }
 }

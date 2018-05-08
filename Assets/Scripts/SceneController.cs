@@ -11,8 +11,10 @@ public class SceneController : MonoBehaviour {
 
     private Text ui_text;
     private int scores = 0;
-	// Use this for initialization
-	void Start () {
+    private Vector2 mouseScreenPosition;
+    private Vector2 direction;
+    // Use this for initialization
+    void Start () {
         ui_text = GameObject.Find("Score").GetComponent<Text>();
         Spawner = GameObject.Find("Spawner");
 	}
@@ -23,13 +25,17 @@ public class SceneController : MonoBehaviour {
 
         if (Input.GetMouseButton(0))
         {
-            RaycastHit2D hit = Physics2D.Raycast(
-                Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero,1000);
-
-
-            //Instantiate(ball, hit.point, new Quaternion(), transform);
+            //RaycastHit2D hit = Physics2D.Raycast(
+            //    Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero,1000);
+            mouseScreenPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            direction = (mouseScreenPosition - (Vector2)Spawner.transform.position).normalized;
+            Spawner.transform.right = direction;
+        }
+        if (Input.GetMouseButtonUp(0)) { 
+            var b = Instantiate(ball, Spawner.transform.position, new Quaternion(), transform);
+            b.GetComponent<Rigidbody2D>().AddForce(direction * 600);
             //scores++;
-            Debug.Log(hit.point);
+            Debug.Log(mouseScreenPosition);
         }
 
     }
