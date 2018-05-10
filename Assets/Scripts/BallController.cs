@@ -16,12 +16,17 @@ public class BallController : MonoBehaviour {
     
     public void OnCollisionEnter2D(Collision2D col)
     {
-
+        if (col.gameObject.tag == "Square")
+        {
+            col.gameObject.SendMessage("Hit");
+            
+        }
     }
     public void OnTriggerEnter2D(Collider2D other)
     {
         if(other.tag == "Bottom")
         {
+            other.SendMessage("CountBall");
             Destroy(gameObject);
         }
     }
