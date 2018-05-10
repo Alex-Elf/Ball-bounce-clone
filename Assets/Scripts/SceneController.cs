@@ -6,6 +6,7 @@ using UnityEngine;
 
 public class SceneController : MonoBehaviour {
     public GameObject ball;
+    public GameObject square;
     public float fireRate;
     public int ballsMaxCount = 100;
     public int ballsCurrentCount;
@@ -21,14 +22,39 @@ public class SceneController : MonoBehaviour {
     private int loadedBalls;
     private bool firing = false;
     private float timer = 0;
-    
+
+    private List<GameObject> rows = new List<GameObject>();
+    private int maxRowLength = 7;
+    private float squareWidth = 0.12f;
+    private float startPosLeft = -0.44f;
+    private float startPosTop = 0.44f;
+    //private float width;
+
     void Start () {
         ui_text = GameObject.Find("Score").GetComponent<Text>();
         Spawner = GameObject.Find("Spawner");
         ballsCurrentCount = ballsMaxCount;
-	}
+        CreateNewRow();
+    }
 
+    void CreateNewRow()
+    {
+        var r = Instantiate(new GameObject("row" + rows.Count), transform);
+        var r_pos = r.transform.localPosition;
+        r_pos.y = startPosTop;
+        r.transform.localPosition = r_pos;
+        foreach (GameObject row in rows){
+            var pos = row.transform.position;
+            pos.y += 0.11f;
+            row.transform.position = pos;
+        }
+        rows.Add(r);
+
+    }
 	void FixedUpdate () {
+        //TODO: Fix firing start on buttonClick
+
+
         timer += Time.deltaTime;
         ui_text.text = "Balls: " + ballsCurrentCount + 
                      "\nMax Balls: " + ballsMaxCount +
