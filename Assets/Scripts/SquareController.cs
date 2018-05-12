@@ -5,10 +5,11 @@ using UnityEngine;
 
 public class SquareController : MonoBehaviour {
     public int hits;
-    public SceneController scene_controller;
+    private SceneController scene_controller;
     private Text ui_Text;
 	void Start () {
         ui_Text = GetComponentInChildren<Text>();
+        scene_controller = GameObject.Find("Pannel").GetComponent<SceneController>();
 	}
 
     void FixedUpdate()

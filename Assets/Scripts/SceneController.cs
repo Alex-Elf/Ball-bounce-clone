@@ -24,7 +24,7 @@ public class SceneController : MonoBehaviour {
     private float timer = 0;
 
     private List<GameObject> rows = new List<GameObject>();
-    private int maxRowLength = 7;
+    private int maxRowLength = 9;
     private float squareWidth = 0.12f;
     private float startPosLeft = -0.44f;
     private float startPosTop = 0.44f;
@@ -39,14 +39,35 @@ public class SceneController : MonoBehaviour {
 
     void CreateNewRow()
     {
+
         var r = Instantiate(new GameObject("row" + rows.Count), transform);
         var r_pos = r.transform.localPosition;
         r_pos.y = startPosTop;
         r.transform.localPosition = r_pos;
+
+        var count = Random.Range(1, maxRowLength+1);
+        GameObject[] cells = new GameObject[maxRowLength];
+
+        while (count > 0)
+        {
+
+            var pos = Random.Range(0, maxRowLength);
+            if (cells[pos])
+            {
+                continue;
+            }
+            else
+            {
+                var sq = Instantiate(square, r.transform);
+                sq.transform.localPosition = new Vector2(startPosLeft + 0.11f * pos, 0);
+                count--;
+            }
+        }
+
         foreach (GameObject row in rows){
-            var pos = row.transform.position;
-            pos.y += 0.11f;
-            row.transform.position = pos;
+            var m = row.transform.position;
+            m.y += 0.11f;
+            row.transform.position = m;
         }
         rows.Add(r);
 
