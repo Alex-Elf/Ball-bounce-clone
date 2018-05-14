@@ -131,7 +131,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hits: 150
-  scene_controller: {fileID: 0}
 --- !u!114 &114610600436986440
 MonoBehaviour:
   m_ObjectHideFlags: 1
