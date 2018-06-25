@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Square
   - Bottom
+  - Ball
   layers:
   - Default
   - TransparentFX

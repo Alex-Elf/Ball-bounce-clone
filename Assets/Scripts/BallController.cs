@@ -5,13 +5,20 @@ using UnityEngine;
 public class BallController : MonoBehaviour {
 
     private Vector2 position;
+    private bool returnBack;
 	// Use this for initialization
 	void Start () {
-		
-	}
+        returnBack = false;
+
+    }
 	
 	// Update is called once per frame
 	void FixedUpdate () {
+        if (returnBack)
+        {
+            GetComponent<Rigidbody2D>().MovePosition(Vector2.Lerp(transform.position,
+                new Vector2(0, -5), Time.deltaTime*5));
+        }
 	}
     
     public void OnCollisionEnter2D(Collision2D col)
@@ -29,5 +36,10 @@ public class BallController : MonoBehaviour {
             other.SendMessage("CountBall");
             Destroy(gameObject);
         }
+    }
+
+    public void ReturnBack()
+    {
+        returnBack = true;
     }
 }

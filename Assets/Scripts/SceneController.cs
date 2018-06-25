@@ -91,6 +91,7 @@ public class SceneController : MonoBehaviour {
     }
     void LateUpdate()
     {
+        //remowing none list members
         var l = new List<GameObject>(rows);
         foreach(GameObject row in rows)
         {
