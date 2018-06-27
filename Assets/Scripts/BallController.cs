@@ -25,7 +25,7 @@ public class BallController : MonoBehaviour {
     {
         if (col.gameObject.tag == "Square")
         {
-            col.gameObject.SendMessage("Hit");
+            col.transform.parent.SendMessage("Hit");
             
         }
     }
@@ -35,6 +35,10 @@ public class BallController : MonoBehaviour {
         {
             other.SendMessage("CountBall");
             Destroy(gameObject);
+        }
+        else if(other.tag == "Bonus")
+        {
+            other.SendMessage("Hitted");
         }
     }
 

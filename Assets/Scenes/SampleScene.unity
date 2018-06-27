@@ -1352,6 +1352,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ball: {fileID: 1772650019469182, guid: 58448db95af1f7948b4e674f21720ef5, type: 2}
   square: {fileID: 1542682132165658, guid: 2822f8582366e104f91679c5bcb32a26, type: 2}
+  bonusPref: {fileID: 1209936069249710, guid: 008213e049682e446b713dbc3e54efd3, type: 2}
   rowPref: {fileID: 1888118951927048, guid: e14d500bca10f7346894b6a8dbe0efff, type: 2}
   fireRate: 0.2
   ballsMaxCount: 100

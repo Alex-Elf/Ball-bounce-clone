@@ -7,6 +7,7 @@ using UnityEngine;
 public class SceneController : MonoBehaviour {
     public GameObject ball;
     public GameObject square;
+    public GameObject bonusPref;
     public GameObject rowPref;
     public float fireRate;
     public int ballsMaxCount = 100;
@@ -68,6 +69,7 @@ public class SceneController : MonoBehaviour {
             bonus = 0;
             ballsCurrentCount = ballsMaxCount;
             firing = false;
+            ClearBonuses();
             CreateNewRow();
         }
         if (!firing && Input.GetMouseButton(0))
@@ -91,7 +93,7 @@ public class SceneController : MonoBehaviour {
     }
     void LateUpdate()
     {
-        //remowing none list members
+        //removing none list members
         var l = new List<GameObject>(rows);
         foreach(GameObject row in rows)
         {
@@ -99,6 +101,20 @@ public class SceneController : MonoBehaviour {
             {
                 l.Remove(row);
                 Destroy(row);
+            }
+            else
+            {
+                if(row.transform.childCount != 0)
+                {
+                    for (int i = 0; i < row.transform.childCount; i++)
+                    {
+                        var child = row.transform.GetChild(i);
+                        if (child.tag == "Bonus" && child.GetComponent<Bonus>().active == false)
+                        {
+                            Destroy(child.gameObject);
+                        }
+                    }
+                }
             }
         }
         rows = l;
@@ -114,6 +130,7 @@ public class SceneController : MonoBehaviour {
         var count = Random.Range(1, maxRowLength -1);
         bool[] cells = new bool[maxRowLength-2];
 
+
         while (count > 0)
         {
             var pos = Random.Range(0, maxRowLength-2);
@@ -123,11 +140,22 @@ public class SceneController : MonoBehaviour {
             }
             else
             {
-                var sq = Instantiate(square, r.transform);
-                sq.transform.localPosition = new Vector2(startPosLeft + 0.11f * pos, 0);
-                sq.GetComponent<SquareController>().hits = Random.Range(ballsMaxCount/2, 
-                                                                    ballsMaxCount * 2);
-                sq.GetComponent<SquareController>().grad = grad;
+                var val = Random.value;
+                if (val <=0.05f)
+                {
+                    var b = Instantiate(bonusPref, r.transform);
+                    b.transform.localPosition = new Vector2(startPosLeft + 0.11f * pos, 0);
+                }
+                else
+                {
+                    var sq = Instantiate(square, r.transform);
+                    sq.transform.localPosition = new Vector2(startPosLeft + 0.11f * pos, 0);
+                    sq.GetComponent<SquareController>().hits =(int) Random.Range(ballsMaxCount / 2,
+                                                                        ballsMaxCount * 1.5f);
+                    sq.GetComponent<SquareController>().grad = grad;
+                    
+                    
+                }
                 cells[pos] = true;
                 count--;
             }
@@ -157,5 +185,23 @@ public class SceneController : MonoBehaviour {
         }
         grad.SetKeys(gck, gak);
     }
-
+    void ClearBonuses()
+    {
+        foreach (GameObject row in rows)
+        {
+           
+            if (row.transform.childCount != 0)
+            {
+                for (int i = 0; i < row.transform.childCount; i++)
+                {
+                    var child = row.transform.GetChild(i);
+                    if (child.tag == "Bonus")
+                    {
+                        Destroy(child.gameObject);
+                    }
+                }
+            }
+            
+        }
+    }
 }
