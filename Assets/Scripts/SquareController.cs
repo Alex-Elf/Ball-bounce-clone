@@ -18,11 +18,14 @@ public class SquareController : MonoBehaviour {
         ui_Text.fontSize = (ui_Text.text.Length > 2) ? 50 : 70;
         ui_Text.text = hits.ToString();
         //grad 0 - grad_max, grad_max == 0, 
-        if (hits> grad_max)
+        if (hits > grad_max)
         {
-            GetComponent<SpriteRenderer>().color = grad.Evaluate((float)(hits%150) / 150);
+            GetComponent<SpriteRenderer>().color = grad.Evaluate((float)(hits % 150) / 150);
         }
-        else GetComponent<SpriteRenderer>().color = grad.Evaluate((float)hits / 150);
+        else
+        {
+            GetComponent<SpriteRenderer>().color = grad.Evaluate((float)hits / 150);
+        }
         if (hits <= 0) Destroy(gameObject);
     }
         

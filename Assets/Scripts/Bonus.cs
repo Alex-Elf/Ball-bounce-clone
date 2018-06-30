@@ -46,6 +46,7 @@ public class Bonus : MonoBehaviour {
         active = false;
         GetComponent<SpriteRenderer>().sprite = sprites[1];
         GetComponent<Collider2D>().enabled = false;
-        scene_controller.bonus += (int)Mathf.Max(scene_controller.ballsMaxCount * 0.02f, 1);
+        int bonus =(int) Mathf.Max(scene_controller.ballsMaxCount * 0.05f, 1);
+        scene_controller.bonus += bonus;
     }
 }
