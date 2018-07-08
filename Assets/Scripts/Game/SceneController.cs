@@ -14,12 +14,15 @@ public class SceneController : MonoBehaviour {
     public int ballsCurrentCount;
     public int bonus = 0;
     public int scores = 0;
+    public int rounds = 0;
+    public bool gameOver;
 
     private GameObject Spawner;
 
     private Text ui_text;
     private Vector2 mouseWorldPosition;
     private Vector2 direction;
+    private bool insidePannel;
 
     private int loadedBalls;
     private bool firing = false;
@@ -44,17 +47,37 @@ public class SceneController : MonoBehaviour {
         ui_text = GameObject.Find("Score").GetComponent<Text>();
         Spawner = GameObject.Find("Spawner");
         ballsCurrentCount = ballsMaxCount;
+        
         CreateNewRow();
+        
+        gameOver = false;
+        Spawner.transform.GetComponentInChildren<SpriteRenderer>().enabled = false;
     }
-
     
 	void FixedUpdate () {
-        //TODO: Fix firing start on buttonClick
-        
-
+        if(!gameOver)
+        {
+            Game();
+        }
+        else
+        {
+            var s = GameObject.Find("SUMUP");
+            if(s)
+            {
+                var text =s.GetComponent<Text>().text;
+                text = "You ended " + rounds + " rounds" +
+                             "\nWith scores: " + scores +
+                        "\nAnd " + ballsMaxCount + " balls";
+                s.GetComponent<Text>().text = text;
+            }
+        }
+    }
+    void Game()
+    {
         timer += Time.deltaTime;
-        ui_text.text = "Balls: " + ballsCurrentCount + 
+        ui_text.text = "Balls: " + ballsCurrentCount +
                      "\nMax Balls: " + ballsMaxCount +
+                     "\nRounds: " + rounds +
                      "\nScores: " + scores;
         if (firing && loadedBalls > 0 && timer >= fireRate)//fire!
         {
@@ -63,7 +86,7 @@ public class SceneController : MonoBehaviour {
             timer = 0;
             loadedBalls--;
         }
-        if(firing && ballsCurrentCount == ballsMaxCount)//round end
+        if (firing && ballsCurrentCount == ballsMaxCount)//round end
         {
             ballsMaxCount += bonus;
             bonus = 0;
@@ -75,28 +98,40 @@ public class SceneController : MonoBehaviour {
             Spawner.transform.localPosition = pos;
 
             ClearBonuses();
-            CreateNewRow();
+            if (rows.Count == 7)
+            {
+                CreateNewRow();
+                GameOver();
+            }
+            else
+            {
+                CreateNewRow();
+                rounds++;
+            }
         }
         if (!firing && Input.GetMouseButton(0))//starting firing
         {
-            //RaycastHit2D hit = Physics2D.Raycast(
-            //    Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero,1000);
 
             Spawner.transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = true;
             mouseWorldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             direction = (mouseWorldPosition - (Vector2)Spawner.transform.position).normalized;
             Spawner.transform.right = direction;
+            insidePannel = mouseWorldPosition.x <= transform.localScale.x / 2 &&
+                 mouseWorldPosition.x >= -transform.localScale.x / 2 &&
+                 mouseWorldPosition.y >= -transform.localScale.y / 2 &&
+                 mouseWorldPosition.y <= transform.localScale.y / 2;
+            Debug.Log(mouseWorldPosition);
         }
-        if (!firing && Input.GetMouseButtonUp(0))
+        if (!firing && Input.GetMouseButtonUp(0) && insidePannel)
         {
             loadedBalls = ballsCurrentCount;
             ballsCurrentCount = 0;
             firing = true;
             Spawner.transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
-            
-            //Debug.Log(mouseWorldPosition);
+
         }
     }
+
     void LateUpdate()
     {
         //removing none list members
@@ -108,20 +143,6 @@ public class SceneController : MonoBehaviour {
                 l.Remove(row);
                 Destroy(row);
             }
-            //else
-            //{
-            //    if(row.transform.childCount != 0)
-            //    {
-            //        for (int i = 0; i < row.transform.childCount; i++)
-            //        {
-            //            var child = row.transform.GetChild(i);
-            //            if (child.tag == "Bonus" && child.GetComponent<Bonus>().active == false)
-            //            {
-            //                Destroy(child.gameObject);
-            //            }
-            //        }
-            //    }
-            //}
         }
         rows = l;
     }
@@ -217,5 +238,11 @@ public class SceneController : MonoBehaviour {
             }
             
         }
+    }
+    void GameOver()
+    {
+        gameOver = true;
+        GameObject.Find("GameController").GetComponent<GameController>().GameOver(ballsMaxCount, rounds, scores);
+        
     }
 }
