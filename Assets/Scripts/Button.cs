@@ -4,15 +4,19 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class Button : MonoBehaviour {
-    bool ff = false;
+    int ff = 1;
     public void FastForward()
     {
-        ff = !ff;
-        Time.timeScale =(ff)? 3: 1;
+        ff = (ff < 16) ? ff * 2 : 1;
+        Time.timeScale = ff;
     }
     public void StartGame()
     {
         GameObject.Find("GameController").SendMessage("StartGame");
+    }
+    public void MainMenu()
+    {
+        GameObject.Find("GameController").SendMessage("MainMenu");
     }
     public void Quit()
     {

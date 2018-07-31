@@ -39,7 +39,9 @@ public class SceneController : MonoBehaviour {
     private GradientAlphaKey[] gak ;
     public Color[] colors;
 
+    private GameController gameController;
     void Start () {
+        gameController = GameObject.Find("GameController").GetComponent<GameController>();
         colors = new Color[] {Color.blue, new Color(0,1,1),Color.green,
                               new Color(1,1,0),Color.red,new Color(1,0,1),Color.blue};
 
@@ -78,7 +80,8 @@ public class SceneController : MonoBehaviour {
         ui_text.text = "Balls: " + ballsCurrentCount +
                      "\nMax Balls: " + ballsMaxCount +
                      "\nRounds: " + rounds +
-                     "\nScores: " + scores;
+                     "\nScores: " + scores +
+                     "\nTime: " + Time.timeScale;
         if (firing && loadedBalls > 0 && timer >= fireRate)//fire!
         {
             var b = Instantiate(ball, Spawner.transform.position, new Quaternion(), transform);
@@ -242,7 +245,7 @@ public class SceneController : MonoBehaviour {
     void GameOver()
     {
         gameOver = true;
-        GameObject.Find("GameController").GetComponent<GameController>().GameOver(ballsMaxCount, rounds, scores);
+        gameController.GameOver(ballsMaxCount, rounds, scores);
         
     }
 }

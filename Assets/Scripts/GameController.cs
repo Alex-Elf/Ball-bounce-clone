@@ -18,6 +18,10 @@ public class GameController : MonoBehaviour {
             Destroy(gameObject);
         }
 	}
+    public void MainMenu()
+    {
+        SceneManager.LoadScene("MainMenu");
+    }
     public void GameOver(int ballsMaxCount, int rounds, int scores)
     {
         
