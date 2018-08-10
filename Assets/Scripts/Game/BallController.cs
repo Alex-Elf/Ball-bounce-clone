@@ -4,31 +4,24 @@ using UnityEngine;
 
 public class BallController : MonoBehaviour {
 
-    private Vector2 position;
-    private bool returnBack;
+    private Vector2 _position;
+    private bool _returnBack;
 	// Use this for initialization
 	void Start () {
-        returnBack = false;
+        _returnBack = false;
 
     }
 	
 	// Update is called once per frame
 	void FixedUpdate () {
-        if (returnBack)
+        if (_returnBack)
         {
             GetComponent<Rigidbody2D>().MovePosition(Vector2.Lerp(transform.position,
                 new Vector2(0, -5), Time.deltaTime*5));
         }
 	}
     
-    public void OnCollisionEnter2D(Collision2D col)
-    {
-        if (col.gameObject.tag == "Square")
-        {
-            col.transform.parent.SendMessage("Hit");
-            
-        }
-    }
+   
     public void OnTriggerEnter2D(Collider2D other)
     {
         if(other.tag == "Bottom")
@@ -44,6 +37,6 @@ public class BallController : MonoBehaviour {
 
     public void ReturnBack()
     {
-        returnBack = true;
+        _returnBack = true;
     }
 }

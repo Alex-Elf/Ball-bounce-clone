@@ -17,46 +17,46 @@ public class SceneController : MonoBehaviour {
     public int rounds = 0;
     public bool gameOver;
 
-    private GameObject Spawner;
+    private GameObject _Spawner;
 
-    private Text ui_text;
-    private Vector2 mouseWorldPosition;
-    private Vector2 direction;
-    private bool insidePannel;
+    private Text _ui_text;
+    private Vector2 _mouseWorldPosition;
+    private Vector2 _direction;
+    private bool _insidePannel;
 
-    private int loadedBalls;
-    private bool firing = false;
-    private float timer = 0;
+    private int _loadedBalls;
+    private bool _firing = false;
+    private float _timer = 0;
 
-    private List<GameObject> rows = new List<GameObject>();
-    private int maxRowLength = 9;
-    private float startPosLeft = -0.44f;
-    private float startPosTop = 0.44f;
+    private List<GameObject> _rows = new List<GameObject>();
+    private int _maxRowLength = 9;
+    private float _startPosLeft = -0.44f;
+    private float _startPosTop = 0.44f;
     //private float width;
 
     public Gradient grad;
-    private GradientColorKey[] gck;
-    private GradientAlphaKey[] gak ;
+    private GradientColorKey[] _gck;
+    private GradientAlphaKey[] _gak ;
     public Color[] colors;
 
     private GameController gameController;
-    void Start () {
+    private void Start () {
         gameController = GameObject.Find("GameController").GetComponent<GameController>();
         colors = new Color[] {Color.blue, new Color(0,1,1),Color.green,
                               new Color(1,1,0),Color.red,new Color(1,0,1),Color.blue};
 
         SetGradient();
-        ui_text = GameObject.Find("Score").GetComponent<Text>();
-        Spawner = GameObject.Find("Spawner");
+        _ui_text = GameObject.Find("Score").GetComponent<Text>();
+        _Spawner = GameObject.Find("Spawner");
         ballsCurrentCount = ballsMaxCount;
         
         CreateNewRow();
         
         gameOver = false;
-        Spawner.transform.GetComponentInChildren<SpriteRenderer>().enabled = false;
+        _Spawner.transform.GetComponentInChildren<SpriteRenderer>().enabled = false;
     }
     
-	void FixedUpdate () {
+	private void FixedUpdate () {
         if(!gameOver)
         {
             Game();
@@ -74,34 +74,34 @@ public class SceneController : MonoBehaviour {
             }
         }
     }
-    void Game()
+    private void Game()
     {
-        timer += Time.deltaTime;
-        ui_text.text = "Balls: " + ballsCurrentCount +
+        _timer += Time.deltaTime;
+        _ui_text.text = "Balls: " + ballsCurrentCount +
                      "\nMax Balls: " + ballsMaxCount +
                      "\nRounds: " + rounds +
                      "\nScores: " + scores +
                      "\nTime: " + Time.timeScale;
-        if (firing && loadedBalls > 0 && timer >= fireRate)//fire!
+        if (_firing && _loadedBalls > 0 && _timer >= fireRate)//fire!
         {
-            var b = Instantiate(ball, Spawner.transform.position, new Quaternion(), transform);
-            b.GetComponent<Rigidbody2D>().AddForce(direction * 600);
-            timer = 0;
-            loadedBalls--;
+            var b = Instantiate(ball, _Spawner.transform.position, new Quaternion(), transform);
+            b.GetComponent<Rigidbody2D>().AddForce(_direction * 600);
+            _timer = 0;
+            _loadedBalls--;
         }
-        if (firing && ballsCurrentCount == ballsMaxCount)//round end
+        if (_firing && ballsCurrentCount == ballsMaxCount)//round end
         {
             ballsMaxCount += bonus;
             bonus = 0;
             ballsCurrentCount = ballsMaxCount;
-            firing = false;
+            _firing = false;
 
-            var pos = Spawner.transform.localPosition;
+            var pos = _Spawner.transform.localPosition;
             pos.x = Random.Range(-0.4f, 0.4f);
-            Spawner.transform.localPosition = pos;
+            _Spawner.transform.localPosition = pos;
 
             ClearBonuses();
-            if (rows.Count == 7)
+            if (_rows.Count == 7)
             {
                 CreateNewRow();
                 GameOver();
@@ -112,34 +112,34 @@ public class SceneController : MonoBehaviour {
                 rounds++;
             }
         }
-        if (!firing && Input.GetMouseButton(0))//starting firing
+        if (!_firing && Input.GetMouseButton(0))//starting firing
         {
 
-            Spawner.transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = true;
-            mouseWorldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            direction = (mouseWorldPosition - (Vector2)Spawner.transform.position).normalized;
-            Spawner.transform.right = direction;
-            insidePannel = mouseWorldPosition.x <= transform.localScale.x / 2 &&
-                 mouseWorldPosition.x >= -transform.localScale.x / 2 &&
-                 mouseWorldPosition.y >= -transform.localScale.y / 2 &&
-                 mouseWorldPosition.y <= transform.localScale.y / 2;
-            Debug.Log(mouseWorldPosition);
+            _Spawner.transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = true;
+            _mouseWorldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            _direction = (_mouseWorldPosition - (Vector2)_Spawner.transform.position).normalized;
+            _Spawner.transform.right = _direction;
+            _insidePannel = _mouseWorldPosition.x <= transform.localScale.x / 2 &&
+                 _mouseWorldPosition.x >= -transform.localScale.x / 2 &&
+                 _mouseWorldPosition.y >= -transform.localScale.y / 2 &&
+                 _mouseWorldPosition.y <= transform.localScale.y / 2;
+            //Debug.Log(mouseWorldPosition);
         }
-        if (!firing && Input.GetMouseButtonUp(0) && insidePannel)
+        if (!_firing && Input.GetMouseButtonUp(0) && _insidePannel)
         {
-            loadedBalls = ballsCurrentCount;
+            _loadedBalls = ballsCurrentCount;
             ballsCurrentCount = 0;
-            firing = true;
-            Spawner.transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
+            _firing = true;
+            _Spawner.transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
 
         }
     }
 
-    void LateUpdate()
+    private void LateUpdate()
     {
         //removing none list members
-        var l = new List<GameObject>(rows);
-        foreach(GameObject row in rows)
+        var l = new List<GameObject>(_rows);
+        foreach(GameObject row in _rows)
         {
             if(!row ||row.transform.childCount == 0)
             {
@@ -147,18 +147,18 @@ public class SceneController : MonoBehaviour {
                 Destroy(row);
             }
         }
-        rows = l;
+        _rows = l;
     }
-    void CreateNewRow()
+    private void CreateNewRow()
     {
         var r = Instantiate(rowPref, transform);
-        r.name = "row" + rows.Count;
+        r.name = "row" + _rows.Count;
         var r_pos = r.transform.localPosition;
-        r_pos.y = startPosTop;
+        r_pos.y = _startPosTop;
         r.transform.localPosition = r_pos;
 
-        var count = Random.Range(1, maxRowLength+1);
-        bool[] cells = new bool[maxRowLength];
+        var count = Random.Range(1, _maxRowLength+1);
+        bool[] cells = new bool[_maxRowLength];
 
 
         while (count > 0)
@@ -174,13 +174,13 @@ public class SceneController : MonoBehaviour {
                 if (val <=0.1f) //Bonus chance
                 {
                     var b = Instantiate(bonusPref, r.transform);
-                    b.transform.localPosition = new Vector2(startPosLeft + 0.11f * pos, 0);
+                    b.transform.localPosition = new Vector2(_startPosLeft + 0.11f * pos, 0);
                     b.GetComponent<Bonus>().type = BonusType.maxBallsBonus;
                 }
                 else
                 {
                     var sq = Instantiate(square, r.transform);
-                    sq.transform.localPosition = new Vector2(startPosLeft + 0.11f * pos, 0);
+                    sq.transform.localPosition = new Vector2(_startPosLeft + 0.11f * pos, 0);
                     sq.GetComponent<SquareController>().hits =
                         (int)Random.Range(ballsMaxCount / 2,ballsMaxCount * 1.25f);
                     sq.GetComponent<SquareController>().grad = grad;
@@ -191,36 +191,36 @@ public class SceneController : MonoBehaviour {
             }
         }
 
-        foreach (GameObject row in rows)//move other rows down
+        foreach (GameObject row in _rows)//move other rows down
         {
             var m = row.transform.localPosition;
             m.y -= 0.11f;
             row.transform.localPosition = m;
         }
-        rows.Add(r);
+        _rows.Add(r);
 
     }
 
-    void SetGradient()
+    private void SetGradient()
     {
-        gck = new GradientColorKey[7];
-        gak = new GradientAlphaKey[7];
-        for (int i = 0; i < gck.Length; i++)
+        _gck = new GradientColorKey[7];
+        _gak = new GradientAlphaKey[7];
+        for (int i = 0; i < _gck.Length; i++)
         {
-            gck[i].color = colors[i];
-            gck[i].time = (float)i / (gck.Length - 1);
+            _gck[i].color = colors[i];
+            _gck[i].time = (float)i / (_gck.Length - 1);
         }
-        for (int i = 0; i < gak.Length; i++)
+        for (int i = 0; i < _gak.Length; i++)
         {
-            gak[i].alpha = 1;
-            gak[i].time = (float)i / (gak.Length - 1);
+            _gak[i].alpha = 1;
+            _gak[i].time = (float)i / (_gak.Length - 1);
         }
-        grad.SetKeys(gck, gak);
+        grad.SetKeys(_gck, _gak);
 
     }
     void ClearBonuses()
     {
-        foreach (GameObject row in rows)
+        foreach (GameObject row in _rows)
         {
             if (row.transform.childCount != 0)
             {
@@ -242,7 +242,7 @@ public class SceneController : MonoBehaviour {
             
         }
     }
-    void GameOver()
+    private void GameOver()
     {
         gameOver = true;
         gameController.GameOver(ballsMaxCount, rounds, scores);
