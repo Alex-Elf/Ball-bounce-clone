@@ -5,4 +5,4 @@ Created my own ball bounce (clone)
 
 To speed-up game - use ">>" Button (right-top corner)
 
-To return balls on screen - use "Return" button
+To return stucked balls - use "Return" button
